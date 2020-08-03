@@ -6,37 +6,43 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var data []string = []string{}
+//User is a struct that represents a user
+type User struct {
+	FullName string `json:"fullName"`
+	UserName string `json:"userName"`
+	Email string `json:"email"`
+}
+
+//Post is a struct that represents a single post
+type Post struct {
+	Title string `json:"title"`
+	Body string `json:"body"`
+	Author User `json:"author"`
+}
+
+var posts []Post = []Post{}
 
 
 func main() {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/test", test)
-
-	router.HandleFunc("/add/{item}", addItem).Methods("POST")
+	router.HandleFunc("/add", addItem).Methods("POST")
 
 	http.ListenAndServe(":5000", router)
 
 }
 
-func test(w http.ResponseWriter, r *http.Request) {
-
-	w.Header().Set("Content-Type", "application/json")
-
-	json.NewEncoder(w).Encode(struct {
-		ID string
-	}{"555"})
-
-}
 
 func addItem(w http.ResponseWriter, r *http.Request) {
 
-	routeVariable := mux.Vars(r)["item"]
-	data = append(data, routeVariable)
+	//get Item value from the JSON body
+	var newPost Post
+	json.NewDecoder(r.Body).Decode(&newPost)
+
+	posts = append(posts, newPost)
 
 	w.Header().Set("Content-Type", "application/json")
 
-	json.NewEncoder(w).Encode(data)
+	json.NewEncoder(w).Encode(posts)
 
 }
