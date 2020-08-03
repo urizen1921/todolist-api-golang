@@ -114,10 +114,8 @@ func patchPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	post := posts[id]
-	json.NewDecoder(r.Body).Decode(&post)
-
-	posts[id] = post
+	post := &posts[id]
+	json.NewDecoder(r.Body).Decode(post)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(post)
