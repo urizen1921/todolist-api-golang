@@ -16,7 +16,7 @@ import (
 type Task struct {
 	gorm.Model
 	Task string `json:"task"`
-	IsComplete bool `json:"isComplete"`
+	Complete bool `json:"complete"`
 }
 
 
@@ -53,7 +53,7 @@ func main() {
 	router.HandleFunc("/tasks/{id}", deleteTask).Methods("DELETE")
 
 	c := cors.New(cors.Options{
-	AllowedOrigins: []string{"http://localhost:3001"},
+	AllowedOrigins: []string{"http://localhost:3000"},
 	AllowCredentials: true,
 	})
 
@@ -169,11 +169,12 @@ func addTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteTask(w http.ResponseWriter, r *http.Request) {
-
+	/*
 	setupResponse(&w, r)
 	if (*r).Method == "OPTIONS" {
 		return
 	}
+	*/
 
 
 	db, err := gorm.Open("mysql", "urizen1921:1921urizen@tcp(127.0.0.1:3306)/tasktestgolang?charset=utf8&parseTime=True&loc=Local")
@@ -183,8 +184,6 @@ func deleteTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	defer db.Close()
-
-
 
 	var idParam string = mux.Vars(r)["id"]
 	fmt.Println(mux.Vars(r))
